@@ -31,11 +31,24 @@ splitLines [x] = ([read one], [read two])
 splitLines (x:xs) = (read one : restA, read two : restB)
     where (one, two) = splitSpace x
           (restA, restB) = splitLines xs
+
+occurences :: Integer -> [Integer] -> Integer
+occurences x [] = 0
+occurences x (y:ys)
+    | x == y    = 1 + remaining 
+    | otherwise = 0 + remaining
+    where remaining = occurences x ys
+
+simScore :: [Integer] -> [Integer] -> Integer
+simScore [] y = 0
+simScore (x:xs) y = (occurences x y * x) + simScore xs y
+
     
 
 main = do
     content <- readFile "./input.txt"
     let linesOfContent :: [String] = lines content
     let (listA, listB) = splitLines linesOfContent
-    let res = sumSmallest listA listB
+    --let res = sumSmallest listA listB
+    let res = simScore listA listB
     print res
